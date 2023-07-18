@@ -35,7 +35,7 @@ class ProductManager {
         return;
       }
       const prodManager = await this.getProducts();
-      const productAdd = prodManager.find((prod) => prod.code === product.code);
+      const productAdd = prodManager.some((prod) => prod.code === product.code);
       if (!productAdd) {
         return "Ya existe un producto con este codigo";
       } else {
