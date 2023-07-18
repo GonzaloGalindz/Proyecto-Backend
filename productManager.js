@@ -36,11 +36,11 @@ class ProductManager {
       }
       const prodManager = await this.getProducts();
       const productAdd = prodManager.some((prod) => prod.code === product.code);
-      if (!productAdd) {
-        return "Ya existe un producto con este codigo";
-      } else {
-        return productAdd;
+      if (productAdd) {
+        console.log("Ya existe un producto con este codigo");
+        return;
       }
+
       // const managerProducts = await this.getProducts();
       let id;
       if (!prodManager.length) {
@@ -132,10 +132,10 @@ const productsManager4 = {
 
 async function managerProd() {
   const productManager = new ProductManager("Products.json");
-  await productManager.addProduct(productsManager1);
-  await productManager.addProduct(productsManager2);
-  await productManager.addProduct(productsManager3);
-  await productManager.addProduct(productsManager4);
+  // await productManager.addProduct(productsManager1);
+  // await productManager.addProduct(productsManager2);
+  // await productManager.addProduct(productsManager3);
+  // await productManager.addProduct(productsManager4);
   const arrayAllProducts = await productManager.getProducts();
   console.log(arrayAllProducts);
   // const prodById = await productManager.getProductById(2);
