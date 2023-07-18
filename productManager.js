@@ -34,11 +34,14 @@ class ProductManager {
         console.log("Por favor, completar todos los campos requeridos");
         return;
       }
-      if (this.products.some((prod) => prod.code === product.code)) {
-        console.log(`Ya existe un producto con este codigo: ${product.code}.`);
-        return;
-      }
       const prodManager = await this.getProducts();
+      const productAdd = prodManager.find((prod) => prod.code === product.code);
+      if (!productAdd) {
+        return "Ya existe un producto con este codigo";
+      } else {
+        return productAdd;
+      }
+      // const managerProducts = await this.getProducts();
       let id;
       if (!prodManager.length) {
         id = 1;
@@ -135,8 +138,8 @@ async function managerProd() {
   await productManager.addProduct(productsManager4);
   const arrayAllProducts = await productManager.getProducts();
   console.log(arrayAllProducts);
-  const prodById = await productManager.getProductById(2);
-  console.log(prodById);
+  // const prodById = await productManager.getProductById(2);
+  // console.log(prodById);
   // await productManager.updateProduct(2, {
   //   title: "Producto 5",
   //   code: "AAA005",
