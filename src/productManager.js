@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 
 class ProductManager {
   constructor(path) {
@@ -41,7 +41,6 @@ class ProductManager {
         return;
       }
 
-      // const managerProducts = await this.getProducts();
       let id;
       if (!prodManager.length) {
         id = 1;
@@ -94,58 +93,61 @@ class ProductManager {
   }
 }
 
-const productsManager1 = {
-  title: "Producto 1",
-  description: "Descripción del producto 1",
-  price: 367,
-  thumbnail: "Sin imagen",
-  code: "AAA001",
-  stock: 25,
-};
+const productsManager = new ProductManager("../Products.json");
+export default productsManager;
 
-const productsManager2 = {
-  title: "Producto 2",
-  description: "Descripción del producto 2",
-  price: 962,
-  thumbnail: "Sin imagen",
-  code: "AAA002",
-  stock: 30,
-};
+// const productsManager1 = {
+//   title: "Producto 1",
+//   description: "Descripción del producto 1",
+//   price: 367,
+//   thumbnail: "Sin imagen",
+//   code: "AAA001",
+//   stock: 25,
+// };
 
-const productsManager3 = {
-  title: "Producto 3",
-  description: "Descripción del producto 3",
-  price: 584,
-  thumbnail: "Sin imagen",
-  code: "AAA003",
-  stock: 15,
-};
+// const productsManager2 = {
+//   title: "Producto 2",
+//   description: "Descripción del producto 2",
+//   price: 962,
+//   thumbnail: "Sin imagen",
+//   code: "AAA002",
+//   stock: 30,
+// };
 
-const productsManager4 = {
-  title: "Producto 4",
-  description: "Descripción del producto 4",
-  price: 724,
-  thumbnail: "Sin imagen",
-  code: "AAA004",
-  stock: 20,
-};
+// const productsManager3 = {
+//   title: "Producto 3",
+//   description: "Descripción del producto 3",
+//   price: 584,
+//   thumbnail: "Sin imagen",
+//   code: "AAA003",
+//   stock: 15,
+// };
 
-async function managerProd() {
-  const productManager = new ProductManager("Products.json");
-  // await productManager.addProduct(productsManager1);
-  // await productManager.addProduct(productsManager2);
-  // await productManager.addProduct(productsManager3);
-  // await productManager.addProduct(productsManager4);
-  const arrayAllProducts = await productManager.getProducts();
-  console.log(arrayAllProducts);
-  // const prodById = await productManager.getProductById(2);
-  // console.log(prodById);
-  // await productManager.updateProduct(2, {
-  //   title: "Producto 5",
-  //   code: "AAA005",
-  //   description: "Descripcion del producto 5",
-  // });
-  // await productManager.deleteProduct(1);
-}
+// const productsManager4 = {
+//   title: "Producto 4",
+//   description: "Descripción del producto 4",
+//   price: 724,
+//   thumbnail: "Sin imagen",
+//   code: "AAA004",
+//   stock: 20,
+// };
 
-managerProd();
+// async function managerProd() {
+//   const productManager = new ProductManager("Products.json");
+//   await productManager.addProduct(productsManager1);
+//   await productManager.addProduct(productsManager2);
+//   await productManager.addProduct(productsManager3);
+//   await productManager.addProduct(productsManager4);
+//   const arrayAllProducts = await productManager.getProducts();
+//   console.log(arrayAllProducts);
+//   const prodById = await productManager.getProductById(2);
+//   console.log(prodById);
+//   await productManager.updateProduct(2, {
+//     title: "Producto 5",
+//     code: "AAA005",
+//     description: "Descripcion del producto 5",
+//   });
+//   await productManager.deleteProduct(1);
+// }
+
+// managerProd();
