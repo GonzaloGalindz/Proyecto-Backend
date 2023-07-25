@@ -47,8 +47,10 @@ class ProductManager {
       } else {
         id = prodManager[prodManager.length - 1].id + 1;
       }
-      prodManager.push({ ...product, id });
+      const newProduct = { ...product, id };
+      prodManager.push(newProduct);
       await fs.promises.writeFile(this.path, JSON.stringify(prodManager));
+      return newProduct;
     } catch (error) {
       return error;
     }
