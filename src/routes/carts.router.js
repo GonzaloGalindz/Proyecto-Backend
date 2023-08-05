@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
 router.post("/:cid/product/:pid", async (req, res) => {
   const { cid, pid } = req.params;
   try {
-    const addProduct = await cartsManager.addProductInCart(+cid, +pid);
+    const addProduct = await cartsManager.addProductInCart();
     res.status(200).json({ msg: "Products in this cart", addProduct });
   } catch (error) {
     res.status(500).json({ error });
