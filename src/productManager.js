@@ -27,7 +27,6 @@ class ProductManager {
         !product.title ||
         !product.description ||
         !product.price ||
-        !product.thumbnail ||
         !product.code ||
         !product.stock
       ) {
