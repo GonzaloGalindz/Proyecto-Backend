@@ -3,9 +3,10 @@ import handlebars from "express-handlebars";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import productsManager from "./productManager.js";
+// import productsManager from "./productManager.js";
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
+import "./dao/dbConfig.js";
 
 const app = express();
 
@@ -27,9 +28,23 @@ const httpServer = app.listen(8080, () => {
 
 const socketServer = new Server(httpServer);
 
+const messages = [];
+
 socketServer.on("connection", (socket) => {
   console.log(`Cliente conectado: ${socket.id}`);
 
+  socket.on("disconnect", () => {
+    console.log(`Usuario desconectado: ${socket.id}`);
+  });
+
+  socket.on("mensaje", (infoMensaje) => {
+    messages.push(infoMensaje);
+
+    socketServer.emit("chat", messages);
+  });
+  socket.on("usuarioNuevo", (usuario) => {
+    socket.broadcast.emit("broadcast", usuario);
+  });
   socket.on("agregar", async (objProd) => {
     const opAdd = await productsManager.addProduct(objProd);
     if (opAdd) {

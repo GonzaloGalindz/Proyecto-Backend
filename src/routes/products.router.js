@@ -1,17 +1,15 @@
 import { Router } from "express";
-import productsManager from "../productManager.js";
+import { productsMongo } from "../Dao/Managers/productsMongo.js";
 
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const limit = req.query.limit;
   try {
-    const prods = await productsManager.getProducts();
-    const prodLimit = await prods.slice(0, limit);
-    if (!limit) {
-      res.status(200).json({ msg: "Products", prods });
+    const products = await productsMongo.findAll();
+    if (products.length) {
+      res.status(200).json({ msg: "All Products", products });
     } else {
-      res.status(200).json({ msg: "Limited Products", prodLimit });
+      res.status(200).json({ msg: "No products found" });
     }
   } catch (error) {
     res.status(500).json({ error });
@@ -21,17 +19,25 @@ router.get("/", async (req, res) => {
 router.get("/:pid", async (req, res) => {
   const { pid } = req.params;
   try {
-    const prod = await productsManager.getProductById(+pid);
-    res.status(200).json({ msg: "Product by Id", prod });
+    const prod = await productsMongo.findById(pid);
+    if (!prod) {
+      res.status(400).json({ msg: "No product ID found" });
+    } else {
+      res.status(200).json({ msg: "Product", prod });
+    }
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
 router.post("/", async (req, res) => {
+  const { name, price, stock, code, description } = req.body;
+  if (!name || !price || !stock || !code || !description) {
+    res.status(400).json({ msg: "Some data is missing" });
+  }
   try {
-    const newProd = await productsManager.addProduct(req.body);
-    res.status(200).json({ message: "Product added successfully", newProd });
+    const newProduct = await productsMongo.createOne(req.body);
+    res.status(200).json({ msg: "New Product", newProduct });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -40,8 +46,8 @@ router.post("/", async (req, res) => {
 router.put("/:pid", async (req, res) => {
   const { pid } = req.params;
   try {
-    const prodUpdated = await productsManager.updateProduct(+pid, req.body);
-    res.status(200).json({ message: "Product upgraded successfully" });
+    const prodUpdated = await productsMongo.updateone(pid, req.body);
+    res.status(200).json({ msg: "Product updated", prodUpdated });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -50,8 +56,8 @@ router.put("/:pid", async (req, res) => {
 router.delete("/:pid", async (req, res) => {
   const { pid } = req.params;
   try {
-    const deletedProd = await productsManager.deleteProduct(+pid);
-    res.status(200).json({ message: "Product removed successfully" });
+    const deletedProduct = await productsMongo.deleteOne(pid);
+    res.status(200).json({ msg: "Product deleted", deletedProduct });
   } catch (error) {
     res.status(500).json({ error });
   }
