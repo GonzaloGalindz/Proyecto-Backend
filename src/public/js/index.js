@@ -29,6 +29,7 @@ formulario.onsubmit = (e) => {
     message: inputMessage.value,
   };
   socketClient.emit("mensaje", infoMensaje);
+  inputMessage.value = "";
 };
 
 socketClient.on("chat", (messages) => {

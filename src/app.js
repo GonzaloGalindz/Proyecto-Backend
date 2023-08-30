@@ -3,9 +3,10 @@ import handlebars from "express-handlebars";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-// import productsManager from "./productManager.js";
+import productsManager from "./dao/managers/productManager.js";
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
+import { chatMongo } from "./dao/managers/chatMongo.js";
 import "./dao/dbConfig.js";
 
 const app = express();
@@ -37,9 +38,9 @@ socketServer.on("connection", (socket) => {
     console.log(`Usuario desconectado: ${socket.id}`);
   });
 
-  socket.on("mensaje", (infoMensaje) => {
-    messages.push(infoMensaje);
-
+  socket.on("mensaje", async (infoMensaje) => {
+    await chatMongo.createOne(infoMensaje);
+    const messages = await chatMongo.findAll();
     socketServer.emit("chat", messages);
   });
   socket.on("usuarioNuevo", (usuario) => {
