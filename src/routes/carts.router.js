@@ -7,11 +7,7 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const carts = await cartsMongo.findAll();
-    if (carts.length) {
-      res.status(200).json({ msg: "All carts", carts });
-    } else {
-      res.status(200).json({ msg: "No Carts found" });
-    }
+    res.status(200).json({ msg: "All carts", carts });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -28,8 +24,8 @@ router.get("/:cid", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, products, description } = req.body;
-  if (!name || !products || !description) {
+  const { name, description } = req.body;
+  if (!name || !description) {
     res.status(400).json({ msg: "Some data is missing" });
   }
   try {
@@ -50,11 +46,31 @@ router.put("/:cid", async (req, res) => {
   }
 });
 
+router.put("/:cid/products/:pid", async (req, res) => {
+  const { cid, pid } = req.params;
+  try {
+    //
+    res.status(200).json({ msg: "Cart updated" });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
 router.delete("/:cid", async (req, res) => {
   const { cid } = req.params;
   try {
     const deletedCart = await cartsMongo.deleteOne(cid);
     res.status(200).json({ msg: "Cart deleted", deletedCart });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
+router.delete("/:cid/products/:pid", async (req, res) => {
+  const { cid, pid } = req.params;
+  try {
+    const result = await cartsMongo.deleteProductInCart(cid, pid);
+    res.status(200).json({ message: "Success" });
   } catch (error) {
     res.status(500).json({ error });
   }

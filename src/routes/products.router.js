@@ -5,12 +5,8 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const products = await productsMongo.findAll();
-    if (products.length) {
-      res.status(200).json({ msg: "All Products", products });
-    } else {
-      res.status(200).json({ msg: "No products found" });
-    }
+    const products = await productsMongo.findAll(req.query);
+    res.status(200).json({ products });
   } catch (error) {
     res.status(500).json({ error });
   }
