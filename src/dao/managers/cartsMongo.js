@@ -1,6 +1,15 @@
 import { CartsModel } from "../models/carts.model.js";
 
 class CartsMongo {
+  async saveCart(cart) {
+    try {
+      await cart.save();
+      return cart;
+    } catch (error) {
+      return error;
+    }
+  }
+
   async findAll() {
     try {
       const carts = await CartsModel.find({});
@@ -28,7 +37,23 @@ class CartsMongo {
     }
   }
 
-  async updateone(cid, obj) {
+  async addProductToCart(cid, pid) {
+    const cart = await CartsModel.findById(cid);
+    const prod = cart.products.find((p) => p.product.equals(pid));
+    if (prod) {
+      prod.quantity += quantity || 1;
+    } else {
+      cart.products.push({ product: pid, quantity: quantity || 1 });
+    }
+    try {
+      await this.saveCart(cart);
+    } catch (error) {
+      return error;
+    }
+    return cart;
+  }
+
+  async updateOne(cid, obj) {
     try {
       const updCart = await CartsModel.updateOne({ _id: cid }, { ...obj });
       return updCart;
@@ -37,13 +62,18 @@ class CartsMongo {
     }
   }
 
-  async updateProductInCart(cid, obj) {
+  async updateProductInCart(cid, pid, newQuantity) {
+    const cart = await CartsModel.findById(cid);
+    const product = cart.products.find((p) => p.product.equals(pid));
+    if (product) {
+      product.quantity = newQuantity;
+    }
     try {
-      const updCart = await CartsModel.updateOne({ _id: cid }, { ...obj });
-      return updCart;
+      await this.saveCart(cart);
     } catch (error) {
       return error;
     }
+    return cart;
   }
 
   async deleteOne(cid) {
