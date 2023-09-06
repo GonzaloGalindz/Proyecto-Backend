@@ -37,22 +37,6 @@ class CartsMongo {
     }
   }
 
-  async addProductToCart(cid, pid) {
-    const cart = await CartsModel.findById(cid);
-    const prod = cart.products.find((p) => p.product.equals(pid));
-    if (prod) {
-      prod.quantity += quantity || 1;
-    } else {
-      cart.products.push({ product: pid, quantity: quantity || 1 });
-    }
-    try {
-      await this.saveCart(cart);
-    } catch (error) {
-      return error;
-    }
-    return cart;
-  }
-
   async updateOne(cid, obj) {
     try {
       const updCart = await CartsModel.updateOne({ _id: cid }, { ...obj });

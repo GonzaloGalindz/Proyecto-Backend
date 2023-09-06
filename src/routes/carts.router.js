@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cartsMongo } from "../Dao/Managers/cartsMongo.js";
+import { cartsMongo } from "../dao/managers/cartsMongo.js";
 
 const router = Router();
 
@@ -33,21 +33,6 @@ router.post("/", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error });
   }
-});
-
-router.post("/:cid/products/:pid", async (req, res) => {
-  const cid = req.params.cid;
-  const pid = req.params.pid;
-  const { quantity } = req.body;
-
-  if (!quantity || isNaN(quantity)) {
-    return res.status(400).json({ error: "Invalid quantity" });
-  }
-  const cart = cartsMongo.addProductToCart(cid, pid);
-  if (!cart) {
-    return res.status(400).json({ error: "Cart not found" });
-  }
-  res.status(200).json({ msg: "Product added to cart", cart });
 });
 
 router.put("/:cid", async (req, res) => {
