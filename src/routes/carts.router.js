@@ -56,19 +56,10 @@ router.put("/:cid/products/:pid", async (req, res) => {
     }
     res.status(200).json({ cart });
   } catch (error) {
-    res.status(500).json({ error });
+    console.log(error.message);
+    // res.status(500).json({ error });
   }
 });
-
-// router.put("/:cid/products/:pid", async (req, res) => {
-//   const { cid, pid } = req.params;
-//   try {
-//     const cart = await cartsMongo.updateProductInCart(cid, pid, req.body);
-//     res.status(200).json({ msg: "Cart and products updated", cart });
-//   } catch (error) {
-//     res.status(500).json({ error });
-//   }
-// });
 
 router.delete("/:cid", async (req, res) => {
   const { cid } = req.params;

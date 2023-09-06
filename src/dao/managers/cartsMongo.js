@@ -48,7 +48,7 @@ class CartsMongo {
 
   async updateProductInCart(cid, pid, newQuantity) {
     const cart = await CartsModel.findById(cid);
-    const product = cart.products.find((p) => p.product.equals(pid));
+    const product = cart.products.find((p) => p.id == pid);
     if (product) {
       product.quantity = newQuantity;
     }
