@@ -37,7 +37,7 @@
     </tr>
   </thead>
   <tbody id="bodyProd">
-    {{#each products}}
+    {{#each products.docs}}
       <tr style="text-align: center;">
         <td style="padding: 0.7rem;">{{id}}</td>
         <td style="padding: 0.7rem;">{{title}}</td>
@@ -49,6 +49,7 @@
     {{/each}}
   </tbody>
 </table>
+<button type="button">Log Out</button>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>

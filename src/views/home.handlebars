@@ -1,3 +1,4 @@
+<h1>Welcome to the page: {{first_name}}</h1>
 <table style="background-color: rgb(108, 110, 239);">
   <thead>
     <tr>
@@ -10,7 +11,7 @@
     </tr>
   </thead>
   <tbody>
-    {{#each products}}
+    {{#each products.docs}}
       <tr style="text-align: center;">
         <td style="padding: 0.7rem;">{{id}}</td>
         <td style="padding: 0.7rem;">{{title}}</td>
@@ -22,3 +23,4 @@
     {{/each}}
   </tbody>
 </table>
+<button type="button">Log Out</button>

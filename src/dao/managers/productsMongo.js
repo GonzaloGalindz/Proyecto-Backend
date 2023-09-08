@@ -1,14 +1,14 @@
 import { productsModel } from "../models/products.model.js";
 
 class ProductsMongo {
-  // async findAll() {
-  //   try {
-  //     const products = await productsModel.find({});
-  //     return products;
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // }
+  async findProducts() {
+    try {
+      const products = await productsModel.find({});
+      return products;
+    } catch (error) {
+      return error;
+    }
+  }
 
   async findAll(obj) {
     const { limit = 10, page = 1, sortPrice, ...query } = obj;
