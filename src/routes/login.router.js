@@ -23,7 +23,7 @@ router.post("/register", async (req, res) => {
 
 //Compare password
 router.post("/login", async (req, res) => {
-  const { email, password, role } = req.body;
+  const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: "Some data is missing" });
   }
@@ -38,8 +38,8 @@ router.post("/login", async (req, res) => {
 
   req.session["email"] = email;
 
-  const userRole = await usersMongo.findUserRole(role);
-  if (userRole === "user") {
+  const userRole = await usersMongo.findUser(email);
+  if (userRole.role.value == "user") {
     res.redirect("/api/views");
   } else {
     res.redirect("/api/views/realtimeproducts");

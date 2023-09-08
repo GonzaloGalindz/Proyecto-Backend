@@ -18,15 +18,6 @@ class UsersMongo {
       return error;
     }
   }
-
-  async findUserRole(role) {
-    try {
-      const user = await usersModel.findOne({ role });
-      return user;
-    } catch (error) {
-      return error;
-    }
-  }
 }
 
 export const usersMongo = new UsersMongo();

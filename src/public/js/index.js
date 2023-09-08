@@ -1,7 +1,7 @@
 const socketClient = io();
 
 const formProd = document.getElementById("formProduct");
-const name = document.getElementById("name");
+const nameProduct = document.getElementById("nameProduct");
 const description = document.getElementById("description");
 const price = document.getElementById("price");
 const stock = document.getElementById("stock");
@@ -13,14 +13,14 @@ const id = document.getElementById("id");
 formProd.onsubmit = (e) => {
   e.preventDefault();
   const objProd = {
-    name: name.value,
+    name: nameProduct.value,
     code: code.value,
     price: Number(price.value),
     stock: Number(stock.value),
     description: description.value,
   };
   socketClient.emit("agregar", objProd);
-  name.value = "";
+  nameProduct.value = "";
   code.value = "";
   price.value = "";
   stock.value = "";
