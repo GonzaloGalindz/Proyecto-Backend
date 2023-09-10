@@ -7,11 +7,11 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import loginRouter from "./routes/login.router.js";
-import productsManager from "./dao/managers/productManager.js";
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
 // import { chatMongo } from "./dao/managers/chatMongo.js";
 import "./dao/dbConfig.js";
+import { productsMongo } from "./dao/managers/productsMongo.js";
 
 const app = express();
 
@@ -35,7 +35,7 @@ app.use(
         "mongodb+srv://gonzagalin777:e6fcvUQkvu8zSVy1@cluster0.uonwr28.mongodb.net/ecommerce43400DB?retryWrites=true&w=majority",
     }),
     secret: "secretSession",
-    cookie: { maxAge: 100000 },
+    cookie: { maxAge: 60000 },
   })
 );
 
@@ -53,37 +53,37 @@ const socketServer = new Server(httpServer);
 
 // const messages = [];
 
-// socketServer.on("connection", (socket) => {
-//   console.log(`Cliente conectado: ${socket.id}`);
+socketServer.on("connection", (socket) => {
+  console.log(`Cliente conectado: ${socket.id}`);
 
-//   socket.on("disconnect", () => {
-//     console.log(`Usuario desconectado: ${socket.id}`);
-//   });
+  //   socket.on("disconnect", () => {
+  //     console.log(`Usuario desconectado: ${socket.id}`);
+  //   });
 
-//   socket.on("mensaje", async (infoMensaje) => {
-//     await chatMongo.createOne(infoMensaje);
-//     const messages = await chatMongo.findAll();
-//     socketServer.emit("chat", messages);
-//   });
-//   socket.on("usuarioNuevo", (usuario) => {
-//     socket.broadcast.emit("broadcast", usuario);
-//   });
+  //   socket.on("mensaje", async (infoMensaje) => {
+  //     await chatMongo.createOne(infoMensaje);
+  //     const messages = await chatMongo.findAll();
+  //     socketServer.emit("chat", messages);
+  //   });
+  //   socket.on("usuarioNuevo", (usuario) => {
+  //     socket.broadcast.emit("broadcast", usuario);
+  //   });
 
-//   socket.on("agregar", async (objProd) => {
-//     const opAdd = await productsManager.addProduct(objProd);
-//     if (opAdd) {
-//       socketServer.emit("added", opAdd.newProduct);
-//     } else {
-//       socket.emit("added", opAdd);
-//     }
-//   });
+  socket.on("agregar", async (obj) => {
+    const opAdd = await productsMongo.createOne(obj);
+    if (opAdd) {
+      socketServer.emit("added", opAdd.newProduct);
+    } else {
+      socket.emit("added", opAdd);
+    }
+  });
 
-//   socket.on("eliminar", async (id) => {
-//     const opDel = await productsManager.deleteProduct(id);
-//     if (opDel) {
-//       socketServer.emit("deleted", opDel.modData);
-//     } else {
-//       socket.emit("deleted", opDel);
-//     }
-//   });
-// });
+  socket.on("eliminar", async (pid) => {
+    const opDel = await productsMongo.deleteOne(pid);
+    if (opDel) {
+      socketServer.emit("deleted", opDel.modData);
+    } else {
+      socket.emit("deleted", opDel);
+    }
+  });
+});

@@ -1,7 +1,8 @@
-<h1>Welcome to the page: {{first_name}}</h1>
+<h1>Welcome to the page {{first_name}}</h1>
 <table style="background-color: rgb(108, 110, 239);">
   <thead>
     <tr>
+      <th style="padding: 1rem; font-size: 1.5rem">ID</th>
       <th style="padding: 1rem; font-size: 1.5rem">Name</th>
       <th style="padding: 1rem; font-size: 1.5rem">Code</th>
       <th style="padding: 1rem; font-size: 1.5rem">Price</th>
@@ -10,8 +11,9 @@
     </tr>
   </thead>
   <tbody>
-    {{#each products.docs}}
+    {{#each products}}
       <tr style="text-align: center;">
+        <td style="padding: 0.7rem;">{{_id}}</td>
         <td style="padding: 0.7rem;">{{name}}</td>
         <td style="padding: 0.7rem;">{{code}}</td>
         <td style="padding: 0.7rem;">${{price}}</td>
@@ -21,4 +23,7 @@
     {{/each}}
   </tbody>
 </table>
-<button type="button">Log Out</button>
+<a href="/logout" style="padding: 50%;"><button
+    type="button"
+    style="padding: 0.5rem;"
+  >Log Out</button></a>

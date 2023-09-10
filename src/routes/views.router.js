@@ -6,12 +6,14 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   const products = await productsMongo.findProducts();
-  res.render("home", { products });
+  const plainProducts = products.map((product) => product.toObject());
+  res.render("home", { products: plainProducts });
 });
 
 router.get("/realtimeproducts", async (req, res) => {
   const products = await productsMongo.findProducts();
-  res.render("realTimeProducts", { products });
+  const plainProducts = products.map((product) => product.toObject());
+  res.render("realTimeProducts", { products: plainProducts });
 });
 
 // router.get("/chat", (req, res) => {

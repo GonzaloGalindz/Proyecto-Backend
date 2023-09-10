@@ -38,11 +38,10 @@ router.post("/login", async (req, res) => {
 
   req.session["email"] = email;
 
-  const userRole = await usersMongo.findUser(email);
-  if (userRole.role.value == "user") {
-    res.redirect("/api/views");
-  } else {
+  if (userDB.role == "administrator") {
     res.redirect("/api/views/realtimeproducts");
+  } else {
+    res.redirect("/api/views");
   }
 });
 
@@ -52,6 +51,16 @@ router.get("/login", (req, res) => {
 
 router.get("/register", (req, res) => {
   res.render("register");
+});
+
+router.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err)
+      return res
+        .status(500)
+        .send({ status: "Error", error: "Error when closing transfer" });
+    res.redirect("/login");
+  });
 });
 
 export default router;
