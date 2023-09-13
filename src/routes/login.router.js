@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { usersMongo } from "../dao/managers/usersMongo.js";
 import { hashData, compareData } from "../utils.js";
+import passport from "passport";
 
 const router = Router();
 
@@ -62,5 +63,23 @@ router.get("/logout", (req, res) => {
     res.redirect("/login");
   });
 });
+
+//passport github
+router.get(
+  "/githubSignup",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+router.get(
+  "/login/github",
+  passport.authenticate("github", {
+    failureRedirect: "/login",
+    successRedirect: "/api/views",
+  })
+  // (req, res) => {
+  //   console.log(req.user);
+  //   res.send("Bienvenido desde Github");
+  // }
+);
 
 export default router;

@@ -12,6 +12,8 @@ import { Server } from "socket.io";
 // import { chatMongo } from "./dao/managers/chatMongo.js";
 import "./dao/dbConfig.js";
 import { productsMongo } from "./dao/managers/productsMongo.js";
+import passport from "passport";
+import "./passport/passportStrategies.js";
 
 const app = express();
 
@@ -38,6 +40,10 @@ app.use(
     cookie: { maxAge: 60000 },
   })
 );
+
+//passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 //routes
 app.use("/api/products", productsRouter);

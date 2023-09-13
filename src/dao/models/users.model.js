@@ -26,6 +26,14 @@ const usersSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
+  fromGithub: {
+    type: Boolean,
+    default: false,
+  },
+  username: {
+    type: String,
+    unique: true,
+  },
 });
 
 export const usersModel = mongoose.model("Users", usersSchema);
