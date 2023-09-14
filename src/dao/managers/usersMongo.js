@@ -10,23 +10,23 @@ class UsersMongo {
     }
   }
 
-  async findUser(email) {
+  async findUser(data) {
     try {
-      const user = await usersModel.findOne({ email });
+      const user = await usersModel.findOne(data);
       return user;
     } catch (error) {
       return error;
     }
   }
 
-  async findUserByUsername(username) {
-    try {
-      const user = await usersModel.findOne({ username });
-      return user;
-    } catch (error) {
-      return error;
-    }
-  }
+  // async findUserByUsername(username) {
+  //   try {
+  //     const user = await usersModel.findOne({ username });
+  //     return user;
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
 }
 
 export const usersMongo = new UsersMongo();

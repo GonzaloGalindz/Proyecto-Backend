@@ -33,7 +33,7 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        const userDB = await usersMongo.findUserByUsername(profile.username);
+        const userDB = await usersMongo.findUser(profile.username);
         //login
         if (userDB) {
           if (userDB.fromGithub) {
@@ -61,8 +61,8 @@ passport.use(
 );
 
 //user=>id
-passport.serializeUser((usuario, done) => {
-  done(null, usuario._id);
+passport.serializeUser((user, done) => {
+  done(null, user._id);
 });
 
 //id=>user
