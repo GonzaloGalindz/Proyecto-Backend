@@ -6,13 +6,13 @@ import passport from "passport";
 const router = Router();
 
 router.post("/register", async (req, res) => {
-  const { first_name, last_name, email, age, password } = req.body;
-  if (!first_name || !last_name || !email || !age || !password) {
+  const { first_name, last_name, username, email, age, password } = req.body;
+  if (!first_name || !last_name || !username || !email || !age || !password) {
     return res.status(400).json({ message: "Some data is missing" });
   }
-  const userDB = await usersMongo.findUser(email);
+  const userDB = await usersMongo.findUser({ username });
   if (userDB) {
-    return res.status(400).json({ message: "Email already used" });
+    return res.status(400).json({ message: "Username already used" });
   }
   const hashPassword = await hashData(password);
   const newUser = await usersMongo.createUser({
@@ -24,20 +24,21 @@ router.post("/register", async (req, res) => {
 
 //Compare password
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
+  const { username, password } = req.body;
+  if (!username || !password) {
     return res.status(400).json({ message: "Some data is missing" });
   }
-  const userDB = await usersMongo.findUser(email);
+  const userDB = await usersMongo.findUser({ username });
   if (!userDB) {
     return res.status(400).json({ message: "Signup first" });
   }
   const isPasswordValid = await compareData(password, userDB.password);
   if (!isPasswordValid) {
-    return res.status(401).json({ message: "Email or Password not valid" });
+    return res.status(401).json({ message: "Username or Password not valid" });
   }
 
-  req.session["email"] = email;
+  // req.session["email"] = email;
+  req.session["username"] = username;
 
   if (userDB.role == "administrator") {
     res.redirect("/api/views/realtimeproducts");
@@ -73,7 +74,7 @@ router.get(
 router.get(
   "/login/github",
   passport.authenticate("github", {
-    failureRedirect: "/login",
+    failureRedirect: "/register",
     successRedirect: "/api/views",
   })
   // (req, res) => {

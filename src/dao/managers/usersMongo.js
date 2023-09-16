@@ -10,23 +10,14 @@ class UsersMongo {
     }
   }
 
-  async findUser(data) {
+  async findUser(username) {
     try {
-      const user = await usersModel.findOne(data);
+      const user = await usersModel.findOne(username);
       return user;
     } catch (error) {
       return error;
     }
   }
-
-  // async findUserByUsername(username) {
-  //   try {
-  //     const user = await usersModel.findOne({ username });
-  //     return user;
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // }
 }
 
 export const usersMongo = new UsersMongo();

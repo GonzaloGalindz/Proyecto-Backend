@@ -1,19 +1,21 @@
 import express from "express";
 import handlebars from "express-handlebars";
+import { __dirname } from "./utils.js";
+import { Server } from "socket.io";
+import "./dao/dbConfig.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import mongoStore from "connect-mongo";
+import passport from "passport";
+import "./passport/passportStrategies.js";
+
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import loginRouter from "./routes/login.router.js";
-import { __dirname } from "./utils.js";
-import { Server } from "socket.io";
+
 // import { chatMongo } from "./dao/managers/chatMongo.js";
-import "./dao/dbConfig.js";
 import { productsMongo } from "./dao/managers/productsMongo.js";
-import passport from "passport";
-import "./passport/passportStrategies.js";
 
 const app = express();
 

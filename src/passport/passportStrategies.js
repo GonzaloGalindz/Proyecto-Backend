@@ -7,9 +7,9 @@ import { compareData } from "../utils.js";
 
 passport.use(
   "login",
-  new LocalStrategy(async function (email, password, done) {
+  new LocalStrategy(async function (username, password, done) {
     try {
-      const userDB = await usersMongo.findUser(email);
+      const userDB = await usersModel.findOne({ username: profile.username });
       if (!userDB) {
         return done(null, false);
       }
@@ -33,7 +33,9 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        const userDB = await usersMongo.findUser(profile.username);
+        const userDB = await usersModel.findOne({
+          username: profile.username,
+        });
         //login
         if (userDB) {
           if (userDB.fromGithub) {
@@ -48,10 +50,12 @@ passport.use(
           first_name: profile.displayName.split(" ")[0],
           last_name: profile.displayName.split(" ")[1],
           username: profile.username,
+          email: " ",
           password: " ",
+          age: " ",
           fromGithub: true,
         };
-        const result = await usersMongo.createUser(newUser);
+        const result = await usersModel.create(newUser);
         done(null, result);
       } catch (error) {
         done(error);
