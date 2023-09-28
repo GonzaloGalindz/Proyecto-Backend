@@ -1,15 +1,16 @@
 import passport from "passport";
-import { usersModel } from "../dao/models/users.model.js";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GitHubStrategy } from "passport-github2";
+import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
 import { usersMongo } from "../dao/managers/usersMongo.js";
 import { compareData } from "../utils.js";
 
+//Local login
 passport.use(
   "login",
   new LocalStrategy(async function (username, password, done) {
     try {
-      const userDB = await usersModel.findOne({ username: profile.username });
+      const userDB = await usersMongo.findUser(profile.username);
       if (!userDB) {
         return done(null, false);
       }
@@ -24,6 +25,7 @@ passport.use(
   })
 );
 
+//Github
 passport.use(
   new GitHubStrategy(
     {
@@ -33,10 +35,8 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        const userDB = await usersModel.findOne({
-          username: profile.username,
-        });
         //login
+        const userDB = await usersMongo.findUser(profile.username);
         if (userDB) {
           if (userDB.fromGithub) {
             return done(null, userDB);
@@ -55,11 +55,48 @@ passport.use(
           age: " ",
           fromGithub: true,
         };
-        const result = await usersModel.create(newUser);
+        const result = await usersMongo.createUser(newUser);
         done(null, result);
       } catch (error) {
         done(error);
       }
+    }
+  )
+);
+
+//JWT
+const JWT_SECRET_KEY = "secretJWTkey";
+
+// Sin Cookies
+// passport.use(
+//   "jwt",
+//   new JWTStrategy(
+//     {
+//       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+//       secretOrKey: JWT_SECRET_KEY,
+//     },
+//     async (jwt_payload, done) => {
+//       console.log("jwt_payload", jwt_payload);
+//       done(null, jwt_payload.user);
+//     }
+//   )
+// );
+
+// Con cookies
+const cookieExtractor = (req) => {
+  return req.cookies.token;
+};
+
+passport.use(
+  "jwt",
+  new JWTStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+      secretOrKey: JWT_SECRET_KEY,
+    },
+    async (jwt_payload, done) => {
+      console.log("jwt_payload", jwt_payload);
+      done(null, jwt_payload.user);
     }
   )
 );
@@ -72,7 +109,7 @@ passport.serializeUser((user, done) => {
 //id=>user
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await usersModel.findById(id);
+    const user = await usersMongo.findUserById(id);
     done(null, user);
   } catch (error) {
     done(error);

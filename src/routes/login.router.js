@@ -10,7 +10,7 @@ router.post("/register", async (req, res) => {
   if (!first_name || !last_name || !username || !email || !age || !password) {
     return res.status(400).json({ message: "Some data is missing" });
   }
-  const userDB = await usersMongo.findUser({ username });
+  const userDB = await usersMongo.findUser(username);
   if (userDB) {
     return res.status(400).json({ message: "Username already used" });
   }
@@ -28,7 +28,7 @@ router.post("/login", async (req, res) => {
   if (!username || !password) {
     return res.status(400).json({ message: "Some data is missing" });
   }
-  const userDB = await usersMongo.findUser({ username });
+  const userDB = await usersMongo.findUser(username);
   if (!userDB) {
     return res.status(400).json({ message: "Signup first" });
   }

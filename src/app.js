@@ -13,6 +13,9 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import loginRouter from "./routes/login.router.js";
+import jwtRouter from "./routes/jwt.router.js";
+import usersRouter from "./routes/users.router.js";
+// import { usersCustomRouter } from "./routes/users.custom.router.js";
 
 // import { chatMongo } from "./dao/managers/chatMongo.js";
 import { productsMongo } from "./dao/managers/productsMongo.js";
@@ -32,26 +35,30 @@ app.set("view engine", "handlebars");
 app.use(cookieParser("SecretKeyCookies"));
 
 //sessions
-app.use(
-  session({
-    store: new mongoStore({
-      mongoUrl:
-        "mongodb+srv://gonzagalin777:e6fcvUQkvu8zSVy1@cluster0.uonwr28.mongodb.net/ecommerce43400DB?retryWrites=true&w=majority",
-    }),
-    secret: "secretSession",
-    cookie: { maxAge: 60000 },
-  })
-);
+// app.use(
+//   session({
+//     store: new mongoStore({
+//       mongoUrl:
+//         "mongodb+srv://gonzagalin777:e6fcvUQkvu8zSVy1@cluster0.uonwr28.mongodb.net/ecommerce43400DB?retryWrites=true&w=majority",
+//     }),
+//     secret: "secretSession",
+//     cookie: { maxAge: 60000 },
+//   })
+// );
 
 //passport
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 //routes
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/views", viewsRouter);
 app.use("", loginRouter);
+app.use("/api/jwt", jwtRouter);
+//ruteo avanzado y auth
+app.use("/api/users", usersRouter);
+// app.use("/api/users/", usersCustomRouter.getRouter());
 
 const httpServer = app.listen(8080, () => {
   console.log("Escuchando servidor express en el puerto 8080");

@@ -29,11 +29,17 @@ const usersSchema = new mongoose.Schema({
   },
   role: {
     type: String,
+    enum: ["administrator", "user", "premium"],
     default: "user",
   },
   fromGithub: {
     type: Boolean,
     default: false,
+  },
+  cart: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "Carts",
+    default: null,
   },
 });
 
