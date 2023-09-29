@@ -44,17 +44,17 @@ router.post("/", async (req, res) => {
     if (!userDB) {
       return res.status(400).json({ message: "Signup first" });
     }
-    console.log(username);
     const isPasswordValid = await compareData(password, userDB.password);
     if (!isPasswordValid) {
       return res
         .status(401)
         .json({ message: "Username or Password not valid" });
     }
+    console.log("probando");
 
     const token = generateToken(userDB);
     console.log("token", token);
-    res.status(200).json({ message: "Token generated", token });
+    res.status(200).cookie("token", token).json({ message: "Token generated" });
   } catch (error) {
     res.status(500).json({ message: error });
   }

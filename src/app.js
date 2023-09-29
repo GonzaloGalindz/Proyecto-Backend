@@ -35,20 +35,20 @@ app.set("view engine", "handlebars");
 app.use(cookieParser("SecretKeyCookies"));
 
 //sessions
-// app.use(
-//   session({
-//     store: new mongoStore({
-//       mongoUrl:
-//         "mongodb+srv://gonzagalin777:e6fcvUQkvu8zSVy1@cluster0.uonwr28.mongodb.net/ecommerce43400DB?retryWrites=true&w=majority",
-//     }),
-//     secret: "secretSession",
-//     cookie: { maxAge: 60000 },
-//   })
-// );
+app.use(
+  session({
+    store: new mongoStore({
+      mongoUrl:
+        "mongodb+srv://gonzagalin777:e6fcvUQkvu8zSVy1@cluster0.uonwr28.mongodb.net/ecommerce43400DB?retryWrites=true&w=majority",
+    }),
+    secret: "secretSession",
+    cookie: { maxAge: 60000 },
+  })
+);
 
 //passport
 app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.session());
 
 //routes
 app.use("/api/products", productsRouter);
