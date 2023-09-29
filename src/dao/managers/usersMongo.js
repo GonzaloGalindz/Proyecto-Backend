@@ -12,7 +12,7 @@ class UsersMongo {
 
   async findUser(username) {
     try {
-      const user = await usersModel.findOne({ username }).populate("carts");
+      const user = await usersModel.findOne({ username });
       return user;
     } catch (error) {
       return error;
@@ -21,7 +21,7 @@ class UsersMongo {
 
   async findUserById(id) {
     try {
-      const user = await usersModel.findById(id).populate("carts");
+      const user = await usersModel.findById(id);
       return user;
     } catch (error) {
       return error;

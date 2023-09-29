@@ -40,7 +40,7 @@ router.post("/login", async (req, res) => {
   // req.session["email"] = email;
   req.session["username"] = username;
 
-  if (userDB.role == "administrator") {
+  if (userDB.role == "admin") {
     res.redirect("/api/views/realtimeproducts");
   } else {
     res.redirect("/api/views");

@@ -8,7 +8,7 @@ const router = Router();
 router.get(
   "/:username",
   jwtValidation,
-  authMiddleware(["premium", "administrator"]),
+  authMiddleware(["prime", "admin"]),
   async (req, res) => {
     const { username } = req.params;
     try {
@@ -24,7 +24,7 @@ router.get(
 router.delete(
   "/:username",
   jwtValidation,
-  authMiddleware(["administrator"]),
+  authMiddleware(["admin"]),
   async (req, res) => {
     const { username } = req.params;
     try {

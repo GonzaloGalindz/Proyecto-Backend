@@ -50,7 +50,6 @@ router.post("/", async (req, res) => {
         .status(401)
         .json({ message: "Username or Password not valid" });
     }
-    console.log("probando");
 
     const token = generateToken(userDB);
     console.log("token", token);

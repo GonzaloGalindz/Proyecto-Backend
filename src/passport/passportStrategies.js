@@ -10,7 +10,7 @@ passport.use(
   "login",
   new LocalStrategy(async function (username, password, done) {
     try {
-      const userDB = await usersMongo.findUser(profile.username);
+      const userDB = await usersMongo.findUser(username);
       if (!userDB) {
         return done(null, false);
       }
