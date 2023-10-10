@@ -37,10 +37,9 @@ app.use(cookieParser("SecretKeyCookies"));
 app.use(
   session({
     store: new mongoStore({
-      mongoUrl:
-        "mongodb+srv://gonzagalin777:e6fcvUQkvu8zSVy1@cluster0.uonwr28.mongodb.net/ecommerce43400DB?retryWrites=true&w=majority",
+      mongoUrl: config.mongo_uri,
     }),
-    secret: "secretSession",
+    secret: config.sessionSecret,
     cookie: { maxAge: 60000 },
   })
 );
@@ -56,8 +55,8 @@ app.use("/api/views", viewsRouter);
 app.use("/api/jwt", jwtRouter);
 app.use("/api/users", usersRouter);
 
-const httpServer = app.listen(8080, () => {
-  console.log(`Escuchando servidor express en el puerto 8080`);
+const httpServer = app.listen(config.port, () => {
+  console.log(`Escuchando servidor express en el puerto ${config.port}`);
 });
 
 const socketServer = new Server(httpServer);

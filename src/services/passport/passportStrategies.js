@@ -4,6 +4,7 @@ import { Strategy as GitHubStrategy } from "passport-github2";
 import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
 import { findUser, create } from "../users.service.js";
 import { compareData } from "../../utils.js";
+import config from "../../config.js";
 
 //Local login
 passport.use(
@@ -65,7 +66,6 @@ passport.use(
 );
 
 //JWT
-const JWT_SECRET_KEY = "secretJWTkey";
 
 // Sin Cookies
 // passport.use(
@@ -73,7 +73,7 @@ const JWT_SECRET_KEY = "secretJWTkey";
 //   new JWTStrategy(
 //     {
 //       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-//       secretOrKey: JWT_SECRET_KEY,
+//       secretOrKey: config.jwt_secret_key,
 //     },
 //     async (jwt_payload, done) => {
 //       console.log("jwt_payload", jwt_payload);
@@ -92,7 +92,7 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-      secretOrKey: JWT_SECRET_KEY,
+      secretOrKey: config.jwt_secret_key,
     },
     async (jwt_payload, done) => {
       console.log("jwt_payload", jwt_payload);

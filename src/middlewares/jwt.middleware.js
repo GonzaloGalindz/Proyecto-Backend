@@ -6,7 +6,7 @@ import config from "../config.js";
 //   try {
 //     const authHeader = req.get("Authorization");
 //     const token = authHeader.split(" ")[1];
-//     const response = jwt.verify(token, JWT_SECRET_KEY);
+//     const response = jwt.verify(token, config.jwt_secret_key);
 //     req.user = response.user;
 //     next();
 //   } catch (error) {
