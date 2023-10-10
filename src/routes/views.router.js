@@ -1,20 +1,38 @@
 import { Router } from "express";
-import { productsMongo } from "../dao/managers/productsMongo.js";
+import {
+  viewHome,
+  viewRealTime,
+  login,
+  register,
+  logOutUser,
+} from "../controllers/views.controller.js";
+import passport from "passport";
 // import { MessagesModel } from "../dao/models/messages.model.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const products = await productsMongo.findProducts();
-  const plainProducts = products.map((product) => product.toObject());
-  res.render("home", { products: plainProducts });
-});
+router.get("/", viewHome);
 
-router.get("/realtimeproducts", async (req, res) => {
-  const products = await productsMongo.findProducts();
-  const plainProducts = products.map((product) => product.toObject());
-  res.render("realTimeProducts", { products: plainProducts });
-});
+router.get("/realtimeproducts", viewRealTime);
+
+router.get("/login", login);
+
+router.get("/register", register);
+
+router.get("/logout", logOutUser);
+
+router.get(
+  "/githubSignup",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+router.get(
+  "/login/github",
+  passport.authenticate("github", {
+    failureRedirect: "/api/views/register",
+    successRedirect: "/api/views",
+  })
+);
 
 // router.get("/chat", (req, res) => {
 //   res.render("chat");

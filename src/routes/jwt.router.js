@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { usersMongo } from "../dao/managers/usersMongo.js";
+import { findUser } from "../services/users.service.js";
 import { generateToken, compareData } from "../utils.js";
 import { jwtValidation } from "../middlewares/jwt.middleware.js";
 import passport from "passport";
@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
     if (!username || !password) {
       return res.status(400).json({ message: "Some data is missing" });
     }
-    const userDB = await usersMongo.findUser(username);
+    const userDB = findUser(username);
     if (!userDB) {
       return res.status(400).json({ message: "Signup first" });
     }

@@ -2,23 +2,22 @@ import express from "express";
 import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
-import "./dao/dbConfig.js";
+import "./DAL/MongoDB/dbConfig.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import mongoStore from "connect-mongo";
 import passport from "passport";
-import "./passport/passportStrategies.js";
+import "./services/passport/passportStrategies.js";
+import config from "./config.js";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import loginRouter from "./routes/login.router.js";
 import jwtRouter from "./routes/jwt.router.js";
 import usersRouter from "./routes/users.router.js";
-// import { usersCustomRouter } from "./routes/users.custom.router.js";
 
 // import { chatMongo } from "./dao/managers/chatMongo.js";
-import { productsMongo } from "./dao/managers/productsMongo.js";
+import { create, deleteOne } from "./services/products.service.js";
 
 const app = express();
 
@@ -54,14 +53,11 @@ app.use(passport.session());
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/views", viewsRouter);
-app.use("", loginRouter);
 app.use("/api/jwt", jwtRouter);
-//ruteo avanzado y auth
 app.use("/api/users", usersRouter);
-// app.use("/api/users/", usersCustomRouter.getRouter());
 
 const httpServer = app.listen(8080, () => {
-  console.log("Escuchando servidor express en el puerto 8080");
+  console.log(`Escuchando servidor express en el puerto 8080`);
 });
 
 const socketServer = new Server(httpServer);
@@ -85,7 +81,7 @@ socketServer.on("connection", (socket) => {
   //   });
 
   socket.on("agregar", async (obj) => {
-    const opAdd = await productsMongo.createOne(obj);
+    const opAdd = create(obj);
     if (opAdd) {
       socketServer.emit("added", opAdd.newProduct);
     } else {
@@ -94,7 +90,7 @@ socketServer.on("connection", (socket) => {
   });
 
   socket.on("eliminar", async (pid) => {
-    const opDel = await productsMongo.deleteOne(pid);
+    const opDel = deleteOne(pid);
     if (opDel) {
       socketServer.emit("deleted", opDel.modData);
     } else {

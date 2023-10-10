@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
-
-const JWT_SECRET_KEY = "secretJWTkey";
+import config from "../config.js";
 
 // // sin cookies
 // export const jwtValidation = (req, res, next) => {
@@ -19,7 +18,7 @@ const JWT_SECRET_KEY = "secretJWTkey";
 export const jwtValidation = (req, res, next) => {
   try {
     const token = req.cookies.token;
-    const response = jwt.verify(token, JWT_SECRET_KEY);
+    const response = jwt.verify(token, config.jwt_secret_key);
     req.user = response.user;
     next();
   } catch (error) {

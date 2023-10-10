@@ -2,15 +2,15 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
-import { usersMongo } from "../dao/managers/usersMongo.js";
-import { compareData } from "../utils.js";
+import { findUser, create } from "../users.service.js";
+import { compareData } from "../../utils.js";
 
 //Local login
 passport.use(
   "login",
   new LocalStrategy(async function (username, password, done) {
     try {
-      const userDB = await usersMongo.findUser(username);
+      const userDB = findUser(username);
       if (!userDB) {
         return done(null, false);
       }
@@ -36,7 +36,7 @@ passport.use(
     async function (accessToken, refreshToken, profile, done) {
       try {
         //login
-        const userDB = await usersMongo.findUser(profile.username);
+        const userDB = findUser(profile.username);
         if (userDB) {
           if (userDB.fromGithub) {
             return done(null, userDB);
@@ -55,7 +55,7 @@ passport.use(
           age: " ",
           fromGithub: true,
         };
-        const result = await usersMongo.createUser(newUser);
+        const result = create(newUser);
         done(null, result);
       } catch (error) {
         done(error);
