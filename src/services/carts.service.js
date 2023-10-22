@@ -1,39 +1,65 @@
 import { cartsMongo } from "../DAL/DAOs/MongoDAOs/carts.dao.js";
 
-export const findAll = () => {
-  const carts = cartsMongo.findAll();
-  return carts;
-};
+class CartsService {
+  async getAllCarts() {
+    const carts = await cartsMongo.findAll();
+    return carts;
+  }
 
-export const findById = async (cid) => {
-  const cart = await cartsMongo.findById(cid);
-  return cart;
-};
+  async getCartById(cid) {
+    const cart = await cartsMongo.findById(cid);
+    if (!cart) throw new Error("Cart not found");
+    const response = await cartsMongo.model
+      .findById(cid)
+      .populate("products", ["name", "price", "code", "quantity"]);
+    return response;
+  }
 
-export const create = (obj) => {
-  const cart = cartsMongo.createOne(obj);
-  return cart;
-};
+  async createCart(dataCart) {
+    const { name, description } = dataCart;
+    if (!name || !description) throw new Error("some required data is missing");
+    const newCart = await cartsMongo.createOne(dataCart);
+    return newCart;
+  }
 
-export const update = async (cid, obj) => {
-  const cart = await cartsMongo.updateOne({ _id: cid }, { ...obj });
-  return cart;
-};
+  async cartDelete(cid) {
+    const cart = await cartsMongo.findById(cid);
+    if (!cart) throw new Error("Cart not found");
+    const response = await cartsMongo.deleteOne(cid);
+    return response;
+  }
 
-export const deleteOne = async (cid) => {
-  const response = await cartsMongo.deleteCart(cid);
-  return response;
-};
+  async cartUpdate(cid, obj) {
+    const response = await cartsMongo.updateOne({ _id: cid }, { ...obj });
+    return response;
+  }
 
-export const deleteProduct = async (cid, pid) => {
-  const response = await cartsMongo.deleteProductInCart(
-    { _id: cid },
-    { $pull: { products: pid } }
-  );
-  return response;
-};
+  async productDelete(cid, pid) {
+    const cart = await cartsMongo.findById(cid);
+    if (!cart) throw new Error("Cart not found");
+    const response = await cartsMongo.updateOne(
+      { _id: cid },
+      { $pull: { products: pid } }
+    );
+    return response;
+  }
 
-export const updateProductInCart = async (cid, pid, newQuantity) => {
-  const response = await cartsMongo.updateProductInCart(cid, pid, newQuantity);
-  return response;
-};
+  async updateProduct(cid, pid, quantity) {
+    const cart = await cartsMongo.findById(cid);
+    if (!cart) throw new Error("Cart not found");
+    const response = await cartsMongo
+      .findById(cid)
+      .updateOne({ _id: pid }, { $inc: { quantity: quantity } });
+  }
+
+  async addProduct(cid, pid) {
+    const cart = await cartsMongo.findById(cid);
+    if (!cart) throw new Error("Cart not found");
+    const response = await cartsMongo
+      .findById(cid)
+      .updateOne({ $push: { products: pid } });
+    return response;
+  }
+}
+
+export const cartsService = new CartsService();

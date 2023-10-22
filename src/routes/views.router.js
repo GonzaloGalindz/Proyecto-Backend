@@ -1,38 +1,19 @@
 import { Router } from "express";
-import {
-  viewHome,
-  viewRealTime,
-  login,
-  register,
-  logOutUser,
-} from "../controllers/views.controller.js";
-import passport from "passport";
-// import { MessagesModel } from "../dao/models/messages.model.js";
+import { viewsController } from "../controllers/views.controller.js";
 
 const router = Router();
 
-router.get("/", viewHome);
+router.get("/", viewsController.homeRender);
 
-router.get("/realtimeproducts", viewRealTime);
+router.get("/realtimeproducts", viewsController.realTimeProductsRender);
 
-router.get("/login", login);
+router.get("/login", viewsController.loginRender);
 
-router.get("/register", register);
+router.get("/signUp", viewsController.signUpRender);
 
-router.get("/logout", logOutUser);
+// router.get("/adminHome", viewsController.adminHomeRender);
 
-router.get(
-  "/githubSignup",
-  passport.authenticate("github", { scope: ["user:email"] })
-);
-
-router.get(
-  "/login/github",
-  passport.authenticate("github", {
-    failureRedirect: "/api/views/register",
-    successRedirect: "/api/views",
-  })
-);
+router.get("/clientHome", viewsController.clientHomeRender);
 
 // router.get("/chat", (req, res) => {
 //   res.render("chat");

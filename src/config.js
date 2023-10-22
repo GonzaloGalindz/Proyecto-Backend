@@ -4,6 +4,7 @@ dotenv.config();
 export default {
   port: process.env.PORT,
   mongo_uri: process.env.MONGO_URI,
-  jwt_secret_key: process.env.JWT_SECRET_KEY,
   sessionSecret: process.env.SESSIONSECRET,
+  client_id_github: process.env.CLIENT_ID_GITHUB,
+  client_secret_github: process.env.CLIENT_SECRET_GITHUB,
 };

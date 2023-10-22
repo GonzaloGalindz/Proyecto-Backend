@@ -1,8 +1,8 @@
 import passport from "passport";
+import { usersModel } from "../../DAL/MongoDB/models/users.model.js";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GitHubStrategy } from "passport-github2";
-import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
-import { findUser, create } from "../users.service.js";
+import { userService } from "../users.service.js";
 import { compareData } from "../../utils.js";
 import config from "../../config.js";
 
@@ -11,15 +11,15 @@ passport.use(
   "login",
   new LocalStrategy(async function (username, password, done) {
     try {
-      const userDB = findUser(username);
-      if (!userDB) {
+      const user = await userService.findUser(username);
+      if (!user) {
         return done(null, false);
       }
-      const isPasswordValid = await compareData(password, userDB.password);
+      const isPasswordValid = await compareData(password, user.password);
       if (!isPasswordValid) {
         return done(null, false);
       }
-      return done(null, userDB);
+      return done(null, user);
     } catch (error) {
       done(error);
     }
@@ -30,73 +30,37 @@ passport.use(
 passport.use(
   new GitHubStrategy(
     {
-      clientID: "Iv1.b742b16329e64026",
-      clientSecret: "685dbebb58e179a5f6ac95b104c6a92e2360f036",
-      callbackURL: "http://localhost:8080/login/github",
+      clientID: config.client_id_github,
+      clientSecret: config.client_secret_github,
+      callbackURL: "http://localhost:8080/api/users/github",
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        //login
-        const userDB = findUser(profile.username);
-        if (userDB) {
-          if (userDB.fromGithub) {
-            return done(null, userDB);
+        //Login
+        const user = await userService.findUser(profile.username);
+        if (user) {
+          if (user.fromGithub) {
+            return done(null, user);
           } else {
             return done(null, false);
           }
         }
 
-        //register
+        //SignUp
         const newUser = {
           first_name: profile.displayName.split(" ")[0],
           last_name: profile.displayName.split(" ")[1],
           username: profile.username,
-          email: " ",
+          email: profile._json.email,
           password: " ",
           age: " ",
           fromGithub: true,
         };
-        const result = create(newUser);
+        const result = await userService.createUser(newUser);
         done(null, result);
       } catch (error) {
         done(error);
       }
-    }
-  )
-);
-
-//JWT
-
-// Sin Cookies
-// passport.use(
-//   "jwt",
-//   new JWTStrategy(
-//     {
-//       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-//       secretOrKey: config.jwt_secret_key,
-//     },
-//     async (jwt_payload, done) => {
-//       console.log("jwt_payload", jwt_payload);
-//       done(null, jwt_payload.user);
-//     }
-//   )
-// );
-
-// Con cookies
-const cookieExtractor = (req) => {
-  return req.cookies.token;
-};
-
-passport.use(
-  "jwt",
-  new JWTStrategy(
-    {
-      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-      secretOrKey: config.jwt_secret_key,
-    },
-    async (jwt_payload, done) => {
-      console.log("jwt_payload", jwt_payload);
-      done(null, jwt_payload.user);
     }
   )
 );
@@ -109,7 +73,7 @@ passport.serializeUser((user, done) => {
 //id=>user
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await usersMongo.findUserById(id);
+    const user = await usersModel.findById(id);
     done(null, user);
   } catch (error) {
     done(error);

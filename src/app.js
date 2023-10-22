@@ -13,16 +13,18 @@ import config from "./config.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import jwtRouter from "./routes/jwt.router.js";
 import usersRouter from "./routes/users.router.js";
+import loginRouter from "./routes/login.router.js";
+import homeRouter from "./routes/home.router.js";
 
 // import { chatMongo } from "./dao/managers/chatMongo.js";
-import { create, deleteOne } from "./services/products.service.js";
+import { productsService } from "./services/products.service.js";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.static(__dirname + "/public"));
 
 //handlebars
@@ -52,8 +54,9 @@ app.use(passport.session());
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/views", viewsRouter);
-app.use("/api/jwt", jwtRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/login", loginRouter);
+app.use("/api/home", homeRouter);
 
 const httpServer = app.listen(config.port, () => {
   console.log(`Escuchando servidor express en el puerto ${config.port}`);
@@ -80,7 +83,7 @@ socketServer.on("connection", (socket) => {
   //   });
 
   socket.on("agregar", async (obj) => {
-    const opAdd = create(obj);
+    const opAdd = await productsService.addProduct(obj);
     if (opAdd) {
       socketServer.emit("added", opAdd.newProduct);
     } else {
@@ -89,7 +92,7 @@ socketServer.on("connection", (socket) => {
   });
 
   socket.on("eliminar", async (pid) => {
-    const opDel = deleteOne(pid);
+    const opDel = await productsService.deleteProduct(pid);
     if (opDel) {
       socketServer.emit("deleted", opDel.modData);
     } else {

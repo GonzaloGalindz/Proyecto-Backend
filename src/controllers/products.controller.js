@@ -1,62 +1,55 @@
-import {
-  findAll,
-  findById,
-  create,
-  update,
-  deleteOne,
-} from "../services/products.service.js";
+import { productsService } from "../services/products.service.js";
 
-export const getProducts = async (req, res) => {
-  try {
-    const products = findAll();
-
-    const limit = req.query.limit;
-    if (limit) {
-      const resLimit = products.slice(0, parseInt(limit, 10));
-      res.status(200).json({ message: "products", products: resLimit });
-    } else {
-      res.status(200).json({ message: "products", products });
+class ProductsController {
+  async getAllProducts(req, res) {
+    try {
+      const products = await productsService.getProducts(req.query);
+      res.status(200).json({ products });
+    } catch (error) {
+      res.status(500).json({ error });
     }
-  } catch (error) {
-    res.status(500).json({ error });
   }
-};
 
-export const getProductById = async (req, res) => {
-  const { pid } = req.params;
-  try {
-    const product = findById(pid);
-    res.status(200).json({ message: "Product", product });
-  } catch (error) {
-    res.status.apply(500).json({ error });
+  async getProductById(req, res) {
+    const { pid } = req.params;
+    try {
+      const product = await productsService.getProductById(pid);
+      res.status(200).json({ message: "Product by Id", product });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
   }
-};
 
-export const createProduct = async (req, res) => {
-  try {
-    const newProduct = create(req.body);
-    res.status(200).json({ message: "Product added", product: newProduct });
-  } catch (error) {
-    res.status(500).json({ error });
+  async addProduct(req, res) {
+    try {
+      const newProduct = await productsService.addProduct(req.body);
+      res.status(200).json({ message: "New product created", newProduct });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
   }
-};
 
-export const updateProduct = async (req, res) => {
-  const { pid } = req.params;
-  try {
-    const productUpdate = update(pid, req.body);
-    res.status(200).json({ message: "User updated" });
-  } catch (error) {
-    res.status(500).json({ error });
+  async updateProduct(req, res) {
+    const { pid } = req.params;
+    try {
+      const product = await productsService.updateProduct(pid, req.body);
+      res
+        .status(200)
+        .json({ message: "Product updated successfully", product });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
   }
-};
 
-export const deleteProduct = async (req, res) => {
-  const { pid } = req.params;
-  try {
-    const response = deleteOne(pid);
-    res.status(200).json({ message: "Product deleted" });
-  } catch (error) {
-    res.status(500).json({ error });
+  async productDelete(req, res) {
+    const { pid } = req.params;
+    try {
+      const product = await productsService.deleteProduct(pid);
+      res.status(200).json({ message: "Product deleted successfully" });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
   }
-};
+}
+
+export const productsController = new ProductsController();

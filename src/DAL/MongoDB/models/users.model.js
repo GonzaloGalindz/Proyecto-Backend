@@ -19,12 +19,12 @@ const usersSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  age: {
-    type: Number,
-    required: true,
-  },
   password: {
     type: String,
+    required: true,
+  },
+  age: {
+    type: Number,
     required: true,
   },
   role: {
@@ -35,6 +35,11 @@ const usersSchema = new mongoose.Schema({
   fromGithub: {
     type: Boolean,
     default: false,
+  },
+  cartId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Carts",
+    default: null,
   },
 });
 

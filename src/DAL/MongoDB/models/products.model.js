@@ -7,6 +7,10 @@ const productsSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
   price: {
     type: Number,
     required: true,
@@ -21,8 +25,8 @@ const productsSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  description: {
-    type: String,
+  quantity: {
+    type: Number,
     required: true,
   },
 });

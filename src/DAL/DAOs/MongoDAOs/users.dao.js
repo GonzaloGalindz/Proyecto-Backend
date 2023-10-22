@@ -7,12 +7,9 @@ class UsersMongo extends BasicMongo {
   }
 
   async findUser(username) {
-    try {
-      const user = await usersModel.findOne({ username });
-      return user;
-    } catch (error) {
-      return error;
-    }
+    const user = await usersModel.findOne({ username });
+    if (!user) throw new Error("User not found");
+    return user;
   }
 }
 
