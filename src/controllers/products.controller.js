@@ -1,4 +1,6 @@
 import { productsService } from "../services/products.service.js";
+import CustomError from "../errors/custom.error.js";
+import { ErrorMessages } from "../errors/errorNum.js";
 
 class ProductsController {
   async getAllProducts(req, res) {
@@ -6,7 +8,10 @@ class ProductsController {
       const products = await productsService.getProducts(req.query);
       res.status(200).json({ products });
     } catch (error) {
-      res.status(500).json({ error });
+      const customError = CustomError.createError(
+        ErrorMessages.GET_PRODUCTS_ERROR
+      );
+      return res.status(customError.status).json(customError);
     }
   }
 
@@ -16,7 +21,10 @@ class ProductsController {
       const product = await productsService.getProductById(pid);
       res.status(200).json({ message: "Product by Id", product });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      const customError = CustomError.createError(
+        ErrorMessages.PRODUCT_NOT_FOUND
+      );
+      return res.status(customError.status).json(customError);
     }
   }
 
@@ -25,7 +33,10 @@ class ProductsController {
       const newProduct = await productsService.addProduct(req.body);
       res.status(200).json({ message: "New product created", newProduct });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      const customError = CustomError.createError(
+        ErrorMessages.ADD_PRODUCT_ERROR
+      );
+      return res.status(customError.status).json(customError);
     }
   }
 

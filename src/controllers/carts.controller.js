@@ -1,4 +1,6 @@
 import { cartsService } from "../services/carts.service.js";
+import CustomError from "../errors/custom.error.js";
+import { ErrorMessages } from "../errors/errorNum.js";
 
 class CartsController {
   async createcart(req, res) {
@@ -31,7 +33,10 @@ class CartsController {
       const productDeleted = await cartsService.productDelete(cid, pid);
       res.status(200).json({ message: "Product deleted successfully" });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      const customError = CustomError.createError(
+        ErrorMessages.DELETE_PRODUCT_FROM_CART_ERROR
+      );
+      return res.status(customError.status).json(customError);
     }
   }
 
@@ -41,7 +46,8 @@ class CartsController {
       const cartById = await cartsService.getCartById(cid);
       res.status(200).json({ message: "This is your cart", cart: cartById });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      const customError = CustomError.createError(ErrorMessages.CART_NOT_FOUND);
+      res.status(customError.status).json(customError);
     }
   }
 
@@ -69,7 +75,10 @@ class CartsController {
       const cart = await cartsService.cartDelete(cid);
       res.status(200).json({ message: "Your cart has been deleted" });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      const customError = CustomError.createError(
+        ErrorMessages.DELETE_CART_ERROR
+      );
+      return res.status(customError.status).json(customError);
     }
   }
 }

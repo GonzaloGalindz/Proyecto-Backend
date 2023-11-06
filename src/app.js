@@ -9,6 +9,7 @@ import mongoStore from "connect-mongo";
 import passport from "passport";
 import "./services/passport/passportStrategies.js";
 import config from "./config.js";
+import { generate100FakerProducts } from "./mocks/products.mock.js";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -57,6 +58,16 @@ app.use("/api/views", viewsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/home", homeRouter);
+
+//route mock faker
+app.get("/api/mockingproducts", (req, res) => {
+  const fakerProducts = [];
+  for (let i = 0; i < 100; i++) {
+    const productMocking = generate100FakerProducts();
+    fakerProducts.push(productMocking);
+  }
+  res.status(200).json(fakerProducts);
+});
 
 const httpServer = app.listen(config.port, () => {
   console.log(`Escuchando servidor express en el puerto ${config.port}`);

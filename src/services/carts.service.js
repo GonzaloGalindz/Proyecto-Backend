@@ -9,7 +9,7 @@ class CartsService {
   async getCartById(cid) {
     const cart = await cartsMongo.findById(cid);
     if (!cart) throw new Error("Cart not found");
-    const response = await cartsMongo.model
+    const response = await cartsMongo
       .findById(cid)
       .populate("products", ["name", "price", "code", "quantity"]);
     return response;
@@ -17,7 +17,7 @@ class CartsService {
 
   async createCart(dataCart) {
     const { name, description } = dataCart;
-    if (!name || !description) throw new Error("some required data is missing");
+    if (!name || !description) throw new Error("Some required data is missing");
     const newCart = await cartsMongo.createOne(dataCart);
     return newCart;
   }
