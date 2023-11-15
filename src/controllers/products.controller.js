@@ -1,6 +1,7 @@
 import { productsService } from "../services/products.service.js";
 import CustomError from "../errors/custom.error.js";
 import { ErrorMessages } from "../errors/errorNum.js";
+import { logger } from "../logger/winston.js";
 
 class ProductsController {
   async getAllProducts(req, res) {
@@ -44,11 +45,9 @@ class ProductsController {
     const { pid } = req.params;
     try {
       const product = await productsService.updateProduct(pid, req.body);
-      res
-        .status(200)
-        .json({ message: "Product updated successfully", product });
+      logger.info(`Product updated successfully: ${product}`);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      logger.error("Error updating product:", error.message);
     }
   }
 
@@ -56,9 +55,9 @@ class ProductsController {
     const { pid } = req.params;
     try {
       const product = await productsService.deleteProduct(pid);
-      res.status(200).json({ message: "Product deleted successfully" });
+      logger.info(`Product removed successfully`);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      logger.error("Error deleting product:", error.message);
     }
   }
 }

@@ -1,17 +1,16 @@
 import { cartsService } from "../services/carts.service.js";
 import CustomError from "../errors/custom.error.js";
 import { ErrorMessages } from "../errors/errorNum.js";
+import { logger } from "../logger/winston.js";
 
 class CartsController {
   async createcart(req, res) {
     const dataCart = req.body;
     try {
       const newCart = await cartsService.createCart(dataCart);
-      res
-        .status(200)
-        .json({ message: "Cart created successfully", cart: newCart });
+      logger.info(`Cart created successfully: ${newCart}`);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      logger.error("Error creating cart:", error.message);
     }
   }
 
@@ -19,11 +18,9 @@ class CartsController {
     const { cid, pid } = req.params;
     try {
       const newProduct = await cartsService.addProduct(cid, pid);
-      res
-        .status(200)
-        .json({ message: "Product added successfully", product: newProduct });
+      logger.info(`Product added successfully: ${newProduct}`);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      logger.error("Error adding product:", error.message);
     }
   }
 
@@ -60,12 +57,9 @@ class CartsController {
         pid,
         quantity
       );
-      res.status(200).json({
-        message: "Your product has been updated",
-        product: productUpdated,
-      });
+      logger.info(`This product has been updated: ${productUpdated}`);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      logger.error("Error updating product:", error.message);
     }
   }
 

@@ -12,11 +12,11 @@ const customLevels = {
   },
   colors: {
     fatal: "red",
-    error: "orange",
-    warning: "yellow",
+    error: "yellow",
+    warning: "magenta",
     info: "blue",
     http: "green",
-    debug: "white",
+    debug: "grey",
   },
 };
 
@@ -43,7 +43,7 @@ if (config.environment === "prod") {
       new winston.transports.Console({
         level: "debug",
         format: winston.format.combine(
-          //   winston.format.colorize({ colors: customLevels.colors }),
+          winston.format.colorize({ colors: customLevels.colors }),
           winston.format.simple()
         ),
       }),
