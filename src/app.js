@@ -10,6 +10,7 @@ import passport from "passport";
 import "./services/passport/passportStrategies.js";
 import config from "./config.js";
 import { generate100FakerProducts } from "./mocks/products.mock.js";
+import { logger } from "./logger/winston.js";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -69,8 +70,19 @@ app.get("/api/mockingproducts", (req, res) => {
   res.status(200).json(fakerProducts);
 });
 
+//route logger test
+app.get("/api/loggerTest", (req, res) => {
+  logger.fatal("Fatal"),
+    logger.error("Error"),
+    logger.warning("Warning"),
+    logger.info("Info"),
+    logger.http("Http"),
+    logger.debug("Debug"),
+    res.send("Logger winston");
+});
+
 const httpServer = app.listen(config.port, () => {
-  console.log(`Escuchando servidor express en el puerto ${config.port}`);
+  console.log(`Listening express server on port ${config.port}`);
 });
 
 const socketServer = new Server(httpServer);

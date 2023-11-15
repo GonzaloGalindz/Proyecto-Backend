@@ -7,4 +7,5 @@ export default {
   sessionSecret: process.env.SESSIONSECRET,
   client_id_github: process.env.CLIENT_ID_GITHUB,
   client_secret_github: process.env.CLIENT_SECRET_GITHUB,
+  environment: process.env.ENVIRONMENT,
 };
