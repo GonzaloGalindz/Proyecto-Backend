@@ -37,7 +37,16 @@ class CartsController {
     }
   }
 
-  async getCart(req, res) {
+  async getAllCarts(req, res) {
+    try {
+      const carts = await cartsService.getAllCarts();
+      res.status(200).json({ message: "All carts", carts });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getCartById(req, res) {
     const { cid } = req.params;
     try {
       const cartById = await cartsService.getCartById(cid);

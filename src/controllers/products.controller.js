@@ -45,7 +45,8 @@ class ProductsController {
     const { pid } = req.params;
     try {
       const product = await productsService.updateProduct(pid, req.body);
-      logger.info(`Product updated successfully: ${product}`);
+      logger.info(`Product updated successfully`);
+      res.status(200).json({ message: "Product updated", product });
     } catch (error) {
       logger.error("Error updating product:", error.message);
     }
@@ -56,6 +57,7 @@ class ProductsController {
     try {
       const product = await productsService.deleteProduct(pid);
       logger.info(`Product removed successfully`);
+      res.status(200).json({ message: "Product deleted" });
     } catch (error) {
       logger.error("Error deleting product:", error.message);
     }

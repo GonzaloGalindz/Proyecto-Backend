@@ -11,6 +11,8 @@ import "./services/passport/passportStrategies.js";
 import config from "./config.js";
 import { generate100FakerProducts } from "./mocks/products.mock.js";
 import { logger } from "./logger/winston.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -23,6 +25,20 @@ import homeRouter from "./routes/home.router.js";
 import { productsService } from "./services/products.service.js";
 
 const app = express();
+
+//Documentation swagger
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "Documentation of the E-commerce backend project",
+      description: "API Rest E-commerce 43400",
+    },
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`],
+};
+const specs = swaggerJSDoc(swaggerOptions);
+app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
