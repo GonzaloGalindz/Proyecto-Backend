@@ -8,6 +8,7 @@ class ProductsController {
     try {
       const products = await productsService.getProducts(req.query);
       res.status(200).json({ products });
+      logger.info(`All products`);
     } catch (error) {
       const customError = CustomError.createError(
         ErrorMessages.GET_PRODUCTS_ERROR
@@ -21,6 +22,7 @@ class ProductsController {
     try {
       const product = await productsService.getProductById(pid);
       res.status(200).json({ message: "Product by Id", product });
+      logger.info(`Product by Id`);
     } catch (error) {
       const customError = CustomError.createError(
         ErrorMessages.PRODUCT_NOT_FOUND
@@ -33,6 +35,7 @@ class ProductsController {
     try {
       const newProduct = await productsService.addProduct(req.body);
       res.status(200).json({ message: "New product created", newProduct });
+      logger.info(`Product added successfully`);
     } catch (error) {
       const customError = CustomError.createError(
         ErrorMessages.ADD_PRODUCT_ERROR
@@ -45,10 +48,11 @@ class ProductsController {
     const { pid } = req.params;
     try {
       const product = await productsService.updateProduct(pid, req.body);
-      logger.info(`Product updated successfully`);
       res.status(200).json({ message: "Product updated", product });
+      logger.info(`Product updated successfully`);
     } catch (error) {
-      logger.error("Error updating product:", error.message);
+      res.status(500).json({ message: error.message });
+      logger.error("Error updating product");
     }
   }
 
@@ -56,10 +60,11 @@ class ProductsController {
     const { pid } = req.params;
     try {
       const product = await productsService.deleteProduct(pid);
-      logger.info(`Product removed successfully`);
       res.status(200).json({ message: "Product deleted" });
+      logger.info(`Product removed successfully`);
     } catch (error) {
-      logger.error("Error deleting product:", error.message);
+      res.status(500).json({ message: error.message });
+      logger.error("Error deleting product");
     }
   }
 }

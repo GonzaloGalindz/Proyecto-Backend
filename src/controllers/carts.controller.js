@@ -8,9 +8,11 @@ class CartsController {
     const dataCart = req.body;
     try {
       const newCart = await cartsService.createCart(dataCart);
-      logger.info(`Cart created successfully: ${newCart}`);
+      res.status(200).json({ message: "New Cart", cart: newCart });
+      logger.info(`Cart created successfully`);
     } catch (error) {
-      logger.error("Error creating cart:", error.message);
+      res.status(500).json({ message: error.message });
+      logger.error("Error creating cart");
     }
   }
 
@@ -18,9 +20,10 @@ class CartsController {
     const { cid, pid } = req.params;
     try {
       const newProduct = await cartsService.addProduct(cid, pid);
-      logger.info(`Product added successfully: ${newProduct}`);
+      logger.info(`Product added successfully`);
     } catch (error) {
-      logger.error("Error adding product:", error.message);
+      res.status(500).json({ message: error.message });
+      logger.error("Error adding product");
     }
   }
 
@@ -28,7 +31,8 @@ class CartsController {
     const { cid, pid } = req.params;
     try {
       const productDeleted = await cartsService.productDelete(cid, pid);
-      res.status(200).json({ message: "Product deleted successfully" });
+      res.status(200).json({ message: "Product deleted" });
+      logger.info(`Product deleted successfully`);
     } catch (error) {
       const customError = CustomError.createError(
         ErrorMessages.DELETE_PRODUCT_FROM_CART_ERROR
@@ -41,8 +45,10 @@ class CartsController {
     try {
       const carts = await cartsService.getAllCarts();
       res.status(200).json({ message: "All carts", carts });
+      logger.info(`All carts`);
     } catch (error) {
       res.status(500).json({ message: error.message });
+      logger.error("Error reading carts");
     }
   }
 
@@ -51,6 +57,7 @@ class CartsController {
     try {
       const cartById = await cartsService.getCartById(cid);
       res.status(200).json({ message: "This is your cart", cart: cartById });
+      logger.info(`Cart by Id`);
     } catch (error) {
       const customError = CustomError.createError(ErrorMessages.CART_NOT_FOUND);
       res.status(customError.status).json(customError);
@@ -66,9 +73,13 @@ class CartsController {
         pid,
         quantity
       );
-      logger.info(`This product has been updated: ${productUpdated}`);
+      res
+        .status(200)
+        .json({ message: "Product updated", response: productUpdated });
+      logger.info(`Product updated in the cart`);
     } catch (error) {
-      logger.error("Error updating product:", error.message);
+      res.status(500).json({ message: error.message });
+      logger.error("Error updating product");
     }
   }
 
@@ -77,6 +88,7 @@ class CartsController {
     try {
       const cart = await cartsService.cartDelete(cid);
       res.status(200).json({ message: "Your cart has been deleted" });
+      logger.info(`Cart deleted succesfully`);
     } catch (error) {
       const customError = CustomError.createError(
         ErrorMessages.DELETE_CART_ERROR
