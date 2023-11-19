@@ -43,6 +43,7 @@ app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//dirname
 app.use(express.static(__dirname + "/public"));
 
 //handlebars
