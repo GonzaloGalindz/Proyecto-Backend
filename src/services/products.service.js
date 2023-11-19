@@ -19,11 +19,11 @@ class ProductsService {
     return { info };
   }
 
-  async addProduct(obj) {
-    const { name, description, price, stock, code, quantity } = obj;
+  async addProduct(dataProduct) {
+    const { name, description, price, stock, code, quantity } = dataProduct;
     if (!name || !description || !price || !stock || !code || !quantity)
       throw new Error("some data required is missing");
-    const newProduct = await productsMongo.createOne(obj);
+    const newProduct = await productsMongo.createOne(dataProduct);
     return newProduct;
   }
 

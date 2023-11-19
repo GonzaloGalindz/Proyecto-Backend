@@ -32,9 +32,12 @@ class ProductsController {
   }
 
   async addProduct(req, res) {
+    const dataProduct = req.body;
     try {
-      const newProduct = await productsService.addProduct(req.body);
-      res.status(200).json({ message: "New product created", newProduct });
+      const newProduct = await productsService.addProduct(dataProduct);
+      res
+        .status(200)
+        .json({ message: "New product created", product: newProduct });
       logger.info(`Product added successfully`);
     } catch (error) {
       const customError = CustomError.createError(

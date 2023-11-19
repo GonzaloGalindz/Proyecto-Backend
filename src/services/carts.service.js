@@ -9,9 +9,7 @@ class CartsService {
   async getCartById(cid) {
     const cart = await cartsMongo.findById(cid);
     if (!cart) throw new Error("Cart not found");
-    const response = await cartsMongo
-      .findById(cid)
-      .populate("products", ["name", "price", "code", "quantity"]);
+    const response = await cartsMongo.findById(cid);
     return response;
   }
 
@@ -26,11 +24,6 @@ class CartsService {
     const cart = await cartsMongo.findById(cid);
     if (!cart) throw new Error("Cart not found");
     const response = await cartsMongo.deleteOne(cid);
-    return response;
-  }
-
-  async cartUpdate(cid, obj) {
-    const response = await cartsMongo.updateOne({ _id: cid }, { ...obj });
     return response;
   }
 
@@ -50,6 +43,7 @@ class CartsService {
     const response = await cartsMongo
       .findById(cid)
       .updateOne({ _id: pid }, { $inc: { quantity: quantity } });
+    return response;
   }
 
   async addProduct(cid, pid) {

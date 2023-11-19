@@ -8,12 +8,31 @@ paths:
         "200":
           description: All carts were read correctly
         "500":
-          description: Server error
+          description: Error reading all carts
 
     post:
-      summary: Create cart
+      summary: Create a new cart
       tags:
         - Carts
+      parameters:
+        - in: body
+          name: cart
+          required: true
+          description: New cart data
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Cart name
+              description:
+                type: string
+                description: Cart description
+      responses:
+        "200":
+          description: Successfully created cart
+        "500":
+          description: Error creating cart
 
   /api/carts/{cid}:
     get:
@@ -31,14 +50,14 @@ paths:
         "200":
           description: The cart was read correctly
         "500":
-          description: Server error
+          description: There is no cart with this ID
 
     delete:
       summary: Delete a cart by id
       tags:
         - Carts
       parameters:
-        - name: pid
+        - name: cid
           in: path
           required: true
           description: cart id
@@ -48,7 +67,7 @@ paths:
         "200":
           description: The cart was disposed of correctly
         "500":
-          description: Server error
+          description: The cart could not be deleted
 
   /api/carts/{cid}/products/{pid}:
     post:
@@ -68,6 +87,20 @@ paths:
           description: product id
           schema:
             $type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+              example: { "quantity": 3 }
+      responses:
+        "200":
+          description: The product was successfully added to the cart
+        "500":
+          description: Error adding product to cart
 
     put:
       summary: Update product in the cart
@@ -91,7 +124,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#components/requestBodies/updateCart"
+              type: object
+              example: { "quantity": 5 }
+      responses:
+        "200":
+          description: Product quantity was updated in the cart
+        "500":
+          description: Error updating product quantity
 
     delete:
       summary: Remove product from cart
@@ -112,9 +151,9 @@ paths:
             $type: string
       responses:
         "200":
-          description: The product was disposed of correctly
+          description: The product was successfully removed from the cart
         "500":
-          description: Server error
+          description: Error removing product from cart
 
 components:
   schemas:
@@ -131,13 +170,13 @@ components:
           type: string
           description: Cart description
         products:
-          type: object
+          type: array
           description: Products in the cart
       example:
         _id: ObjectId('64e53fb25d35dda3aab57f85')
         name: Carrito 100
         description: descripcion del carrito 100
-        products: {}
+        products: []
 
   requestBodies:
     updateCart:
@@ -150,9 +189,9 @@ components:
           type: string
           description: Cart description
         products:
-          type: object
+          type: array
           description: Products in the cart
       example:
         name: Carrito 100
         description: descripcion del carrito 100
-        products: {}
+        products: []
