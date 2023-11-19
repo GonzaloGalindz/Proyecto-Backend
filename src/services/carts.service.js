@@ -27,31 +27,39 @@ class CartsService {
     return response;
   }
 
-  async productDelete(cid, pid) {
+  async addProductInCart(cid, pid, quantity) {
+    const cart = await cartsMongo.findById(cid);
+    if (!cart) throw new Error("Cart not found");
+    const existingProduct = cart.products.find((p) => p._id.toString() === pid);
+    if (existingProduct) {
+      existingProduct.quantity += quantity || 1;
+    } else {
+      cart.products.push({ product: pid, quantity: quantity || 1 });
+    }
+    await cart.save();
+    return cart;
+  }
+
+  async updateProductInCart(cid, pid, newQuantity) {
+    const cart = await cartsMongo.findById(cid);
+    if (!cart) throw new Error("Cart not found");
+    const existingProduct = cart.products.find((p) => p._id.toString() === pid);
+    if (existingProduct) {
+      existingProduct.quantity += newQuantity;
+    } else {
+      cart.products.push({ product: pid, quantity: newQuantity });
+    }
+    await cart.save();
+    return cart;
+  }
+
+  async productDeleteInCart(cid, pid) {
     const cart = await cartsMongo.findById(cid);
     if (!cart) throw new Error("Cart not found");
     const response = await cartsMongo.updateOne(
       { _id: cid },
       { $pull: { products: pid } }
     );
-    return response;
-  }
-
-  async updateProduct(cid, pid, quantity) {
-    const cart = await cartsMongo.findById(cid);
-    if (!cart) throw new Error("Cart not found");
-    const response = await cartsMongo
-      .findById(cid)
-      .updateOne({ _id: pid }, { $inc: { quantity: quantity } });
-    return response;
-  }
-
-  async addProduct(cid, pid) {
-    const cart = await cartsMongo.findById(cid);
-    if (!cart) throw new Error("Cart not found");
-    const response = await cartsMongo
-      .findById(cid)
-      .updateOne({ $push: { products: pid } });
     return response;
   }
 }

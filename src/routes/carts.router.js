@@ -11,10 +11,10 @@ router.get("/:cid", cartsController.getCartById);
 
 router.delete("/:cid", cartsController.cartDelete);
 
-router.post("/:cid/products/:pid", cartsController.addProduct);
+router.post("/:cid/products/:pid", cartsController.addProductInCart);
 
-router.put("/:cid/products/:pid", cartsController.updateProduct);
+router.put("/:cid/products/:pid", cartsController.updateProductInCart);
 
-router.delete("/:cid/products/:pid", cartsController.productDelete);
+router.delete("/:cid/products/:pid", cartsController.productDeleteInCart);
 
 export default router;
