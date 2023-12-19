@@ -1,10 +1,9 @@
 import { ticketModel } from "../../MongoDB/models/tickets.model.js";
-import BasicMongo from "./BasicMongo.js";
 
-class TicketMongo extends BasicMongo {
-  constructor() {
-    super(ticketModel);
+export class TicketMongo {
+  async createNewTicket(dataTicket) {
+    const newTicket = new ticketModel(dataTicket);
+    await newTicket.save();
+    return newTicket;
   }
 }
-
-export const ticketMongo = new TicketMongo();

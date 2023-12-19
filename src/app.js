@@ -18,11 +18,11 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import usersRouter from "./routes/users.router.js";
-import loginRouter from "./routes/login.router.js";
-import homeRouter from "./routes/home.router.js";
+import mailingRouter from "./routes/mailing.router.js";
 
-// import { chatMongo } from "./dao/managers/chatMongo.js";
+import { chatMongo } from "./services/chat.service.js";
 import { productsService } from "./services/products.service.js";
+import { roleIsUser } from "./middlewares/auth.middlewares.js";
 
 const app = express();
 
@@ -74,8 +74,11 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/views", viewsRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/login", loginRouter);
-app.use("/api/home", homeRouter);
+app.use("/api/mailing", mailingRouter);
+
+app.get("/api/chat", roleIsUser, (req, res) => {
+  res.render("chat");
+});
 
 //route mock faker
 app.get("/api/mockingproducts", (req, res) => {
@@ -87,7 +90,7 @@ app.get("/api/mockingproducts", (req, res) => {
   res.status(200).json(fakerProducts);
 });
 
-//route logger test
+//router logger test
 app.get("/api/loggerTest", (req, res) => {
   logger.fatal("Fatal"),
     logger.error("Error"),
@@ -104,23 +107,19 @@ const httpServer = app.listen(config.port, () => {
 
 const socketServer = new Server(httpServer);
 
-// const messages = [];
+const messages = [];
 
 socketServer.on("connection", (socket) => {
   console.log(`Cliente conectado: ${socket.id}`);
 
-  //   socket.on("disconnect", () => {
-  //     console.log(`Usuario desconectado: ${socket.id}`);
-  //   });
-
-  //   socket.on("mensaje", async (infoMensaje) => {
-  //     await chatMongo.createOne(infoMensaje);
-  //     const messages = await chatMongo.findAll();
-  //     socketServer.emit("chat", messages);
-  //   });
-  //   socket.on("usuarioNuevo", (usuario) => {
-  //     socket.broadcast.emit("broadcast", usuario);
-  //   });
+  socket.on("mensaje", async (infoMensaje) => {
+    await chatMongo.createOne(infoMensaje);
+    const messages = await chatMongo.findAll();
+    socketServer.emit("chat", messages);
+  });
+  socket.on("usuarioNuevo", (usuario) => {
+    socket.broadcast.emit("broadcast", usuario);
+  });
 
   socket.on("agregar", async (obj) => {
     const opAdd = await productsService.addProduct(obj);

@@ -17,6 +17,18 @@ class ProductsController {
     }
   }
 
+  async getProducts(req, res) {
+    try {
+      const products = await productsService.getProducts();
+      res.status(200).json({ products });
+    } catch (error) {
+      const customError = CustomError.createError(
+        ErrorMessages.GET_PRODUCTS_ERROR
+      );
+      return res.status(customError.status).json(customError);
+    }
+  }
+
   async getProductById(req, res) {
     const { pid } = req.params;
     try {

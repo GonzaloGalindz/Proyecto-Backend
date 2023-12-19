@@ -1,29 +1,41 @@
-<h1>Welcome to the page</h1>
-<table style="background-color: rgb(108, 110, 239);">
-  <thead>
-    <tr>
-      <th style="padding: 1rem; font-size: 1.5rem">ID</th>
-      <th style="padding: 1rem; font-size: 1.5rem">Name</th>
-      <th style="padding: 1rem; font-size: 1.5rem">Code</th>
-      <th style="padding: 1rem; font-size: 1.5rem">Price</th>
-      <th style="padding: 1rem; font-size: 1.5rem">Stock</th>
-      <th style="padding: 1rem; font-size: 1.5rem">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each products}}
-      <tr style="text-align: center;">
-        <td style="padding: 0.7rem;">{{_id}}</td>
-        <td style="padding: 0.7rem;">{{name}}</td>
-        <td style="padding: 0.7rem;">{{code}}</td>
-        <td style="padding: 0.7rem;">${{price}}</td>
-        <td style="padding: 0.7rem;">{{stock}}</td>
-        <td style="padding: 0.7rem;">{{description}}</td>
-      </tr>
-    {{/each}}
-  </tbody>
-</table>
-<a href="/api/views/logout" style="padding: 50%;"><button
-    type="button"
-    style="padding: 0.5rem;"
-  >Log Out</button></a>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List of products</title>
+  </head>
+  <body>
+    <h1>Welcome to the page</h1>
+    <table style="background-color: rgb(108, 110, 239);">
+      <thead>
+        <tr>
+          <th style="padding: 1rem; font-size: 1.5rem">ID</th>
+          <th style="padding: 1rem; font-size: 1.5rem">Name</th>
+          <th style="padding: 1rem; font-size: 1.5rem">Code</th>
+          <th style="padding: 1rem; font-size: 1.5rem">Price</th>
+          <th style="padding: 1rem; font-size: 1.5rem">Stock</th>
+          <th style="padding: 1rem; font-size: 1.5rem">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+          <tr style="text-align: center;">
+            <td style="padding: 0.7rem;">{{_id}}</td>
+            <td style="padding: 0.7rem;">{{name}}</td>
+            <td style="padding: 0.7rem;">{{code}}</td>
+            <td style="padding: 0.7rem;">${{price}}</td>
+            <td style="padding: 0.7rem;">{{stock}}</td>
+            <td style="padding: 0.7rem;">{{description}}</td>
+            <button class="button-detail" pid-data={{_id}}>See details</button>
+            <button class="button-add-product" pid-data={{_id}}>Add to cart</button>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <a href="/api/views/logout" style="padding: 50%;"><button
+        type="button"
+        style="padding: 0.5rem;"
+      >Log Out</button></a>
+    <script src="../public/js/index.js"></script>
+  </body>
+</html>

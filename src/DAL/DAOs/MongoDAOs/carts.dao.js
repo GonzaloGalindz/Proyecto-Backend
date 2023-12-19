@@ -5,6 +5,10 @@ class CartsMongo extends BasicMongo {
   constructor() {
     super(cartsModel);
   }
+
+  async saveCart(cart) {
+    await cart.save();
+  }
 }
 
 export const cartsMongo = new CartsMongo();

@@ -1,4 +1,5 @@
 import { cartsMongo } from "../DAL/DAOs/MongoDAOs/carts.dao.js";
+import { productsService } from "./products.service.js";
 
 class CartsService {
   async getAllCarts() {
@@ -13,10 +14,8 @@ class CartsService {
     return response;
   }
 
-  async createCart(dataCart) {
-    const { name, description } = dataCart;
-    if (!name || !description) throw new Error("Some required data is missing");
-    const newCart = await cartsMongo.createOne(dataCart);
+  async createCart() {
+    const newCart = await cartsMongo.createOne();
     return newCart;
   }
 
@@ -61,6 +60,28 @@ class CartsService {
       { $pull: { products: pid } }
     );
     return response;
+  }
+
+  async totalAmountCart(cart) {
+    try {
+      if (!cart) {
+        throw new Error("Cart not found");
+      }
+      let totalAmount = 0;
+      for (const productInfo of cart.products) {
+        const product = await productsService.getProductById(
+          productInfo.product
+        );
+        if (product) {
+          totalAmount += product.price * productInfo.quantity;
+        }
+      }
+      cart.totalAmount = totalAmount;
+      await cartsMongo.saveCart(cart);
+      return cart;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }
 

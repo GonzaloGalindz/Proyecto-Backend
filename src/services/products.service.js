@@ -2,7 +2,7 @@ import { productsMongo } from "../DAL/DAOs/MongoDAOs/products.dao.js";
 import { query } from "express";
 
 class ProductsService {
-  async getProducts(obj) {
+  async getAllProducts(obj) {
     const { limit = 5, page = 1, ...query } = obj;
     const result = await productsMongo.model.paginate(query, { limit, page });
     const info = {
@@ -17,6 +17,11 @@ class ProductsService {
       nextLink: `http://localhost:8080/api/products?page=${result.nextPage}`,
     };
     return { info };
+  }
+
+  async getProducts() {
+    const allProducts = await productsMongo.findAll();
+    return allProducts;
   }
 
   async addProduct(dataProduct) {

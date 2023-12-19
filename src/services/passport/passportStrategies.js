@@ -6,6 +6,21 @@ import { userService } from "../users.service.js";
 import { compareData } from "../../utils.js";
 import config from "../../config.js";
 
+//user=>id
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+});
+
+//id=>user
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await usersModel.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error);
+  }
+});
+
 //Local login
 passport.use(
   "login",

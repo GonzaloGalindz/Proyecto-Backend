@@ -1,7 +1,11 @@
 import { cartsService } from "../services/carts.service.js";
+import { productsService } from "../services/products.service.js";
+import { ticketService } from "../services/tickets.service.js";
 import CustomError from "../errors/custom.error.js";
 import { ErrorMessages } from "../errors/errorNum.js";
 import { logger } from "../logger/winston.js";
+import { codeGenerator } from "../utils.js";
+import UsersDto from "../DAL/DTOs/users.dto.js";
 
 class CartsController {
   async getAllCarts(req, res) {
@@ -16,9 +20,8 @@ class CartsController {
   }
 
   async createcart(req, res) {
-    const dataCart = req.body;
     try {
-      const newCart = await cartsService.createCart(dataCart);
+      const newCart = await cartsService.createCart();
       res.status(200).json({ message: "New Cart", cart: newCart });
       logger.info(`Cart created successfully`);
     } catch (error) {
@@ -99,6 +102,51 @@ class CartsController {
         ErrorMessages.DELETE_PRODUCT_FROM_CART_ERROR
       );
       return res.status(customError.status).json(customError);
+    }
+  }
+
+  async purchasingProcess(req, res) {
+    const cid = req.params.cid;
+    try {
+      const cart = await cartsService.getCartById(cid);
+      if (!cart) {
+        return res.status(404).json({ error: "Cart not found" });
+      }
+      const productsNotPurchased = [];
+      for (const productInfo of cart.products) {
+        const product = await productsService.getProductById(
+          productInfo.product
+        );
+        if (!product) {
+          return res.status(404).json({ error: "Product not found" });
+        }
+        if (product.stock < productInfo.quantity) {
+          productsNotPurchased.push(productInfo.product);
+          continue;
+        } else {
+          product.stock -= productInfo.quantity;
+          await product.save();
+        }
+      }
+      cart.productsNotPurchased = productsNotPurchased;
+      await cartsService.totalAmountCart(cart);
+
+      //Ticket
+      const ticketData = {
+        code: await codeGenerator(),
+        purchase_datetime: new Date(),
+        amount: cart.totalAmount,
+        purchaser: UsersDto.email,
+      };
+      const ticket = await ticketService.createNewTicket(ticketData);
+      await cart.save();
+      res.status(201).json({
+        message: "Successful purchase",
+        data: ticket,
+        notPurchasedProducts: productsNotPurchased,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   }
 }

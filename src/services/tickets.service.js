@@ -1,16 +1,15 @@
-import { ticketMongo } from "../DAL/DAOs/MongoDAOs/ticket.dao.js";
-import { productsMongo } from "../DAL/DAOs/MongoDAOs/products.dao.js";
+import { TicketMongo } from "../DAL/DAOs/MongoDAOs/ticket.dao.js";
 
 class TicketService {
-  async validateProductStock(product) {
-    const { quantity, pid } = product;
-    const productDb = await productsMongo.findById(pid);
-    if (quantity <= productDb.stock) {
-      const newStock = quantity - productDb.stock;
-      const result = await productsMongo
-        .findById(id)
-        .updateOne({ stock: newStock });
-      return result;
+  constructor() {
+    this.ticket = new TicketMongo();
+  }
+  async createNewTicket(dataTicket) {
+    try {
+      const newTicket = await this.ticket.createNewTicket(dataTicket);
+      return newTicket;
+    } catch (error) {
+      throw new Error("Error generating ticket");
     }
   }
 }
